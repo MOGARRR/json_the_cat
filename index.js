@@ -1,11 +1,12 @@
-const getBreedDescription = require('./breedFetcher');
+const {getBreedDescription} = require('./breedFetcher');
 const args = process.argv;
 args.splice(0,2);
 const breedName = args[0];
 
 getBreedDescription(breedName,(error,desc) => {
-
+  if (error !== null) {
+    console.log('Error fetch detials:',error);
+  } else {
+    console.log(desc);
+  }
 });
-// getBreedDescription(userInput, (error,desc) => {
-//   return error !== null ? console.log(error) : console.log(desc.description);
-// });
