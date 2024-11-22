@@ -1,19 +1,21 @@
 const needle = require('needle');
 const args = process.argv;
 args.splice(0,2);
-const query = args[0];
+const breedName = args[0];
 
-needle.get(`https://api.thecatapi.com/v1/breeds/search?q=${query}`,(error,response,body) =>{
-  if (error !== null) {
-    return console.log('Request failed. Please try again');
-  }
+getBreedDescription = (breedName, callback) => {
+   needle.get(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`,(error,response,body) =>{
+    if (error !== null) {
+     return callback(error.code,null);
+    } else if (body[0] === undefined){
+      return callback(`Cannot find ${breedName}`,null);
+    } else { 
+      const obj = body[0];
+     return callback(null,obj);
+    }
+   });
+}
 
-  return getBreed(body[0]);
+getBreedDescription(breedName, (error,desc) => {
+  return error !== null ? console.log(error) : console.log(desc.description);
 });
-
-const getBreed = (obj) => {
-  if (obj === undefined) {
-    return console.log(`Cannot find this breed. Please try another`);
-  }
-  return console.log(obj.description);
-};
